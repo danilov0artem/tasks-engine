@@ -1,0 +1,24 @@
+# После пуша в тему просим GitHub Pages пересобрать сайты, которые её используют.
+# Без этого сайты подхватят новую версию темы только при следующем пуше в них самих.
+#
+# Нужен секрет PAGES_TOKEN: fine-grained token с доступом к репозиториям сайтов
+# и правом "Pages: Read and write" (Settings → Secrets and variables → Actions).
+name: Пересобрать сайты
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        site: [kege2, mathege2]
+    steps:
+      - name: Пересобрать ${{ matrix.site }}
+        env:
+          GH_TOKEN: ${{ secrets.PAGES_TOKEN }}
+        run: gh api -X POST "repos/danilov0artem/${{ matrix.site }}/pages/builds"

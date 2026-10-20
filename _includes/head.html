@@ -1,0 +1,31 @@
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>{{ page.title | default: site.title }}</title>
+  {% assign desc = page.description | default: site.description %}
+  <meta name="description" content="{{ desc | strip_newlines | strip }}" />
+  <link rel="canonical" href="{{ page.url | absolute_url }}" />
+
+  <!-- Open Graph (превью при отправке ссылки в соцсетях) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="{{ site.title }}" />
+  <meta property="og:title" content="{{ page.title | default: site.title }}" />
+  <meta property="og:description" content="{{ desc | strip_newlines | strip }}" />
+  <meta property="og:url" content="{{ page.url | absolute_url }}" />
+
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  {% if include.task_css %}<link rel="stylesheet" href="/assets/css/task-page.css" />{% endif %}
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+  <!-- Тема применяется до отрисовки, чтобы не было мерцания (FOUC) -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (t === "dark" || (!t && prefersDark)) {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {}
+    })();
+  </script>

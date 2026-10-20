@@ -1,0 +1,18 @@
+<header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <a class="brand-title brand-link" href="/">{{ site.title }}</a>
+        {% if site.subtitle %}<div class="brand-subtitle">{{ site.subtitle }}</div>{% endif %}
+      </div>
+
+      {% if site.news_channel %}
+      <nav class="social" aria-label="Ссылки на соцсети">
+        <a class="social-link" href="{{ site.news_channel.url }}" rel="noopener">
+          {{ site.news_channel.text }}
+        </a>
+      </nav>
+      {% endif %}
+
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Переключить тему">🌓</button>
+    </div>
+  </header>
