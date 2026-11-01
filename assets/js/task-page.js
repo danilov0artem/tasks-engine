@@ -133,6 +133,22 @@
         }));
 }
 
+  // Формулы. MathJax нельзя вызывать параллельно (задачи приходят одновременно,
+  // и одновременные typesetPromise портят друг другу результат), поэтому
+  // все вызовы выстраиваем в одну очередь и ждём окончания его запуска.
+  // Если MathJax ещё не загрузился (нет startup), ничего не делаем: при старте
+  // он сам обработает всю страницу, включая уже вставленные задачи.
+  let mathQueue = Promise.resolve();
+  function typesetMath(el) {
+    const MJ = window.MathJax;
+    if (!MJ || !MJ.startup || !MJ.startup.promise) return mathQueue;
+    mathQueue = mathQueue
+      .then(() => MJ.startup.promise)
+      .then(() => MJ.typesetPromise([el]))
+      .catch((e) => console.warn("MathJax:", e && e.message));
+    return mathQueue;
+  }
+
   document.addEventListener("DOMContentLoaded", async () => {
     const config = window.TASK_PAGE_CONFIG || {};
     const THEMES = Array.isArray(config.themes) ? config.themes : [];
@@ -415,9 +431,7 @@ THEMES.forEach((theme, i) => {
 
         host.innerHTML = html;
 
-        if (window.MathJax && window.MathJax.typesetPromise) {
-          await window.MathJax.typesetPromise([host]);
-        }
+        await typesetMath(host);
       } catch (e) {
         host.innerHTML = `
           <h3>${headerText || "Задача"}</h3>
